@@ -5,11 +5,13 @@ import (
 	"mywork/controllers/account"
 	"mywork/controllers/index"
 	"mywork/middleware"
+	"net/http"
 )
 
 func InitRouter() *gin.Engine {
 	router := gin.Default()
-	router.GET("/favicon.ico")
+	router.Static("/resources", "./resources")
+	router.StaticFile("/favicon.ico", "./resources/favicon.ico")
 	router.GET("/", index.Index)
 
 	router.GET("/jwt", index.Jwt)
@@ -26,6 +28,12 @@ func InitRouter() *gin.Engine {
 		r1.GET("/info/:id", account.Info)
 		r1.DELETE("/rem/:id", account.Remove)
 		r1.PUT("/update/:id", account.Update)
+		r1.GET("/user/:name/*action", func(c *gin.Context) {
+			name := c.Param("name")
+			action := c.Param("action")
+			message := name + " is " + action
+			c.String(http.StatusOK, message)
+		})
 	}
 	return router
 }
