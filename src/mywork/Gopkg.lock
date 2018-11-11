@@ -132,6 +132,7 @@
     "github.com/dgrijalva/jwt-go",
     "github.com/gin-gonic/gin",
     "github.com/globalsign/mgo",
+    "github.com/globalsign/mgo/bson",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1

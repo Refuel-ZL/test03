@@ -1,18 +1,18 @@
 package index
 
 import (
+	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
-	"net/http"
 	jwtauth "mywork/middleware"
-	jwt "github.com/dgrijalva/jwt-go"
+	"net/http"
 )
 
 // func1: 处理最基本的GET
-func Index (c *gin.Context)  {
+func Index(c *gin.Context) {
 	// 回复一个200OK,在client的http-get的resp的body中获取数据
 	c.String(http.StatusOK, "index")
 }
-func Jwt(c *gin.Context)  {
+func Jwt(c *gin.Context) {
 	j := &jwtauth.JWT{
 		[]byte("test"),
 	}
@@ -22,7 +22,7 @@ func Jwt(c *gin.Context)  {
 		"1044176017@qq.com",
 		jwt.StandardClaims{
 			ExpiresAt: 15000, //time.Now().Add(24 * time.Hour).Unix()
-			Issuer: "test",
+			Issuer:    "test",
 		},
 	}
 	token, err := j.CreateToken(claims)
