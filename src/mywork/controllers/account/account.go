@@ -9,11 +9,7 @@ import (
 	"net/http"
 )
 
-type user struct {
-	Name     string `form:"name" json:"name" xml:"name" binding:"required" `
-	Phone    string `form:"phone" json:"phone" xml:"phone" `
-	Password string `form:"password" json:"password" xml:"password"`
-}
+type user = models.Account
 
 var (
 	Account = models.Account{}
@@ -21,7 +17,7 @@ var (
 
 // func1: 处理最基本的GET
 func Func1(c *gin.Context) {
-	name := c.DefaultQuery("name", "中国");
+	name := c.DefaultQuery("name", "中国")
 	Id := c.Query("Id")
 
 	// 回复一个200OK,在client的http-get的resp的body中获取数据
@@ -31,7 +27,7 @@ func Func1(c *gin.Context) {
 // func2: 处理最基本的POST
 func Func2(c *gin.Context) {
 	// 回复一个200 OK, 在client的http-post的resp的body中获取数据
-	name := c.PostForm("name");
+	name := c.PostForm("name")
 	password := c.DefaultPostForm("password", "123456")
 
 	var userinfo user
@@ -77,7 +73,7 @@ func Login(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"code": "404"})
 		return
 	}
-	exist := Account.IsExist(bson.M{"name": userInfo.Name})
+	exist := Account.IsExist(bson.M{"username": userInfo.Username})
 	if exist {
 		c.JSON(http.StatusOK, gin.H{"code": 200, "data": userInfo})
 	} else {
@@ -91,5 +87,60 @@ func ListAccount(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"code": 200, "data": exist})
 	} else {
 		c.JSON(http.StatusOK, gin.H{"code": 403, "data": ""})
+	}
+}
+
+func Register(c *gin.Context) {
+	var userInfo user
+	err := c.BindJSON(&userInfo)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{"code": "404"})
+		return
+	}
+	userInfo.Id = bson.NewObjectId()
+	err_ := Account.Insert(userInfo)
+	if err_ == nil {
+		c.JSON(http.StatusOK, gin.H{"code": 200, "data": userInfo})
+	} else {
+		fmt.Println(err_.Error())
+		c.JSON(http.StatusOK, gin.H{"code": 403, "data": userInfo})
+	}
+
+}
+
+func Info(c *gin.Context) {
+	id := c.Param("id")
+	exist, err := Account.FindById(id)
+	if err == nil {
+		c.JSON(http.StatusOK, gin.H{"code": 200, "data": exist})
+	} else {
+		c.JSON(http.StatusOK, gin.H{"code": 404, "data": ""})
+	}
+}
+
+func Update(c *gin.Context) {
+	var userInfo user
+	err := c.BindJSON(&userInfo)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{"code": "404"})
+		return
+	}
+	userInfo.Id = bson.ObjectIdHex(c.Param("id"))
+	_err := Account.UpdateAccount(userInfo)
+	if _err == nil {
+		c.JSON(http.StatusOK, gin.H{"code": 200})
+	} else {
+		fmt.Println(_err.Error())
+		c.JSON(http.StatusOK, gin.H{"code": 404})
+	}
+}
+
+func Remove(c *gin.Context) {
+	id := c.Param("id")
+	err := Account.RemoveAccount(id)
+	if err == nil {
+		c.JSON(http.StatusOK, gin.H{"code": 200})
+	} else {
+		c.JSON(http.StatusOK, gin.H{"code": 404})
 	}
 }

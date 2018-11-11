@@ -9,16 +9,20 @@ import (
 var globalS *mgo.Session
 
 const (
-	host   = "127.0.0.1:27017"
-	source = "admin"
-	user   = "user"
-	pass   = "123456"
+	host      = "127.0.0.1:27017"
+	source    = "admin"
+	database  = "test"
+	poolLimit = 4096
+	user      = "user"
+	pass      = "123456"
 )
 
 func init() {
 	dialInfo := &mgo.DialInfo{
-		Addrs:  []string{host},
-		Source: source,
+		Addrs:     []string{host},
+		Source:    source,
+		Database:  database,
+		PoolLimit: poolLimit,
 		//Username: user,
 		//Password: pass,
 	}
@@ -44,6 +48,12 @@ func IsExist(db, collection string, query interface{}) bool {
 	return count > 0
 }
 
+func Insert(db, collection string, docs ...interface{}) error {
+	ms, c := connect(db, collection)
+	defer ms.Close()
+	return c.Insert(docs...)
+}
+
 func FindOne(db, collection string, query, selector, result interface{}) error {
 	ms, c := connect(db, collection)
 	defer ms.Close()
@@ -54,4 +64,16 @@ func FindAll(db, collection string, query, selector, result interface{}) error {
 	ms, c := connect(db, collection)
 	defer ms.Close()
 	return c.Find(query).Select(selector).All(result)
+}
+
+func Update(db, collection string, query, update interface{}) error {
+	ms, c := connect(db, collection)
+	defer ms.Close()
+	return c.Update(query, update)
+}
+
+func Remove(db, collection string, query interface{}) error {
+	ms, c := connect(db, collection)
+	defer ms.Close()
+	return c.Remove(query)
 }
