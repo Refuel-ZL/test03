@@ -1,6 +1,9 @@
 package models
 
-import "github.com/globalsign/mgo/bson"
+import (
+	"github.com/globalsign/mgo/bson"
+	"time"
+)
 
 type Address struct {
 	Id     bson.ObjectId `bson:"_id" json:"id"`
@@ -9,13 +12,15 @@ type Address struct {
 }
 
 type Account struct {
-	Id       bson.ObjectId `bson:"_id" json:"id"`
-	Username string        `bson:"username" json:"username"`
-	Name     string        `bson:"name" json:"name"`
-	Phone    string        `bson:"phone" json:"phone"`
-	Password string        `bson:"_password" json:"_password"`
-	Role     []string      `bson:"role" json:"role"`
-	Address  []Address     `bson:"address" json:"address"`
+	Id         bson.ObjectId `bson:"_id" json:"id"`
+	Username   string        `bson:"username" json:"username"`
+	Name       string        `bson:"name" json:"name"`
+	Phone      string        `bson:"phone" json:"phone"`
+	Password   string        `bson:"_password" json:"_password"`
+	Role       []string      `bson:"role" json:"role"`
+	Address    []Address     `bson:"address" json:"address"`
+	CreatedAt  time.Time     `bson:"createdAt" json:"createdAt"`
+	ModifiedAt time.Time     `bson:"modifiedAt" json:"modifiedAt"`
 }
 
 const (

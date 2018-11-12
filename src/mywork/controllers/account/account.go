@@ -7,6 +7,7 @@ import (
 	"github.com/globalsign/mgo/bson"
 	"mywork/models"
 	"net/http"
+	"time"
 )
 
 type user = models.Account
@@ -98,6 +99,8 @@ func Register(c *gin.Context) {
 		return
 	}
 	userInfo.Id = bson.NewObjectId()
+	userInfo.CreatedAt = time.Now()
+	userInfo.ModifiedAt = time.Now()
 	err_ := Account.Insert(userInfo)
 	if err_ == nil {
 		c.JSON(http.StatusOK, gin.H{"code": 200, "data": userInfo})
@@ -126,6 +129,7 @@ func Update(c *gin.Context) {
 		return
 	}
 	userInfo.Id = bson.ObjectIdHex(c.Param("id"))
+	userInfo.ModifiedAt = time.Now()
 	_err := Account.UpdateAccount(userInfo)
 	if _err == nil {
 		c.JSON(http.StatusOK, gin.H{"code": 200})
