@@ -11,7 +11,7 @@ var globalS *mgo.Session
 const (
 	host      = "127.0.0.1:27017"
 	source    = "admin"
-	database  = "test"
+	Database  = "mywork"
 	poolLimit = 4096
 	user      = "user"
 	pass      = "123456"
@@ -21,7 +21,7 @@ func init() {
 	dialInfo := &mgo.DialInfo{
 		Addrs:     []string{host},
 		Source:    source,
-		Database:  database,
+		Database:  Database,
 		PoolLimit: poolLimit,
 		//Username: user,
 		//Password: pass,

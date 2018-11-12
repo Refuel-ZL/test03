@@ -19,7 +19,7 @@ type Account struct {
 }
 
 const (
-	db         = "test"
+	db         = Database
 	collection = "accounts"
 )
 
