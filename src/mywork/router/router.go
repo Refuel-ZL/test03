@@ -15,7 +15,9 @@ func InitRouter() *gin.Engine {
 	router.GET("/", index.Index)
 
 	router.GET("/jwt", index.Jwt)
-
+	router.GET("/baidu", func(c *gin.Context) {
+		c.Redirect(http.StatusMovedPermanently, "https://www.baidu.com")
+	})
 	r1 := router.Group("/account").Use(middleware.SetHeaderJSON())
 	{
 		r1.GET("/", account.Func1)
